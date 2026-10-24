@@ -2,13 +2,11 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os/exec"
 	"runtime"
 	"strings"
-	"unicode/utf16"
 )
 
 type track struct {
@@ -48,4 +46,3 @@ const macScript = `function run() {
   const t = spotify.currentTrack();
   return JSON.stringify({playing:true,title:t.name(),artist:t.artist()});
 }`
-
