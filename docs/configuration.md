@@ -10,6 +10,8 @@ go build -o bin/np-for-fluxer .
 
 On Windows use `go build -o bin/np-for-fluxer.exe .`.
 
+On macOS use `bash scripts/build-macos.sh`, then run `./bin/NpForFluxer.app/Contents/MacOS/np-for-fluxer` in place of `./bin/np-for-fluxer` below. The bundle includes the usage description required for direct Apple Events access to Spotify. The macOS installer also supplies this bundle metadata when installing a prebuilt executable.
+
 First test playback detection without credentials or Fluxer writes:
 
 ```sh

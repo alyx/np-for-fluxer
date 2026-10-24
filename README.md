@@ -2,6 +2,8 @@
 
 Sets your Fluxer custom status to `🎵 Song — Artist` from local Spotify desktop playback on Windows, macOS, or Linux. No Spotify API key or developer account required.
 
+Playback is read directly through WinRT on Windows, Apple Events on macOS, and D-Bus on Linux. Polling stays at five seconds by default, with no playback helper subprocesses.
+
 ## Quick start
 
 Install Go 1.22+, open Spotify desktop, and run from this directory.
@@ -18,11 +20,17 @@ $env:FLUXER_TOKEN = Read-Host 'Fluxer user session token' -MaskInput
 **macOS / Linux (Bash):**
 
 ```bash
-go build -o bin/np-for-fluxer .
-./bin/np-for-fluxer -dry-run
+if [[ $(uname -s) == Darwin ]]; then
+  bash scripts/build-macos.sh
+  binary=./bin/NpForFluxer.app/Contents/MacOS/np-for-fluxer
+else
+  go build -o bin/np-for-fluxer .
+  binary=./bin/np-for-fluxer
+fi
+"$binary" -dry-run
 read -rsp 'Fluxer user session token: ' FLUXER_TOKEN; echo
 export FLUXER_TOKEN
-./bin/np-for-fluxer
+"$binary"
 ```
 
 `-dry-run` checks playback without contacting Fluxer. Use a **Fluxer user session token**, not a bot token; keep it private. See [configuration](docs/configuration.md) for token files, self-hosted instances, and polling options.
@@ -39,7 +47,7 @@ Build as above, then run the matching installer **as your regular desktop user**
 | Linux | `bash scripts/install-linux.sh` | systemd user service |
 | macOS | `bash scripts/install-macos.sh` | LaunchAgent |
 
-The app needs your desktop session to read Spotify. On Windows, use the scheduled task rather than a system service. On macOS, allow Automation access to Spotify when prompted.
+The app needs your desktop session to read Spotify. On Windows, use the scheduled task rather than a system service. On macOS, allow Automation access to Spotify when prompted. The build script and installer create an app bundle with the required Automation usage description; Go calls the native APIs through `purego`, without cgo or Xcode build tools.
 
 Rebuild and rerun the installer to update. Use the matching `scripts/uninstall-*` script to remove startup registration; token files and logs remain.
 

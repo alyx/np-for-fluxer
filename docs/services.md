@@ -28,8 +28,10 @@ bash scripts/uninstall-linux.sh
 
 macOS uses a user LaunchAgent, which starts at login and can request Automation permission to read Spotify. Grant the permission if macOS prompts; if permission was previously denied, check System Settings → Privacy & Security → Automation.
 
+The installer places the executable inside `NpForFluxer.app` with an Automation usage description and signs it locally. The LaunchAgent runs that bundled executable. No `osascript` process is used for playback polling.
+
 ```sh
-go build -o bin/np-for-fluxer .
+bash scripts/build-macos.sh
 bash scripts/install-macos.sh
 tail -f "$HOME/Library/Application Support/NpForFluxer/np-for-fluxer.log"
 # To remove startup:
